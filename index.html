@@ -1,12 +1,998 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Mi sitio web<h1>
+    <title>La Más Draga - Sitio Oficial | ¡Y La Que Soporte!</title>
     
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@300;400;600;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragPink: '#ff007f',
+                        dragMagenta: '#d90429',
+                        dragPurple: '#2a004e',
+                        dragDark: '#0a0212',
+                        dragGold: '#ffd700',
+                        dragGoldDark: '#b8860b'
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
+                        marker: ['Permanent Marker', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0212;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #ff007f, #8a2be2);
+            border-radius: 5px;
+        }
+
+        /* Neon Glow Effects */
+        .neon-text-pink {
+            color: #ffffff;
+            text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 40px #ff007f, 0 0 80px #ff007f;
+        }
+        
+        .neon-text-gold {
+            color: #fff3a0;
+            text-shadow: 0 0 5px #fff, 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 40px #ffd700;
+        }
+
+        .neon-border-pink {
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.6), inset 0 0 15px rgba(255, 0, 127, 0.3);
+            border: 1px solid #ff007f;
+        }
+
+        .neon-border-gold {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), inset 0 0 10px rgba(255, 215, 0, 0.2);
+            border: 1px solid #ffd700;
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #fff3a0 0%, #ffd700 50%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pink-purple-gradient {
+            background: linear-gradient(135deg, #ff007f 0%, #7b2cbf 100%);
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(22, 6, 36, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 0, 127, 0.25);
+        }
+
+        .glass-card-gold {
+            background: rgba(30, 18, 5, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        /* Background Animated Shimmer */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .glitter-button {
+            background: linear-gradient(90deg, #ff007f, #ffd700, #9d4edd, #ff007f);
+            background-size: 300% 100%;
+            animation: shimmer 4s infinite linear;
+            transition: all 0.3s ease;
+        }
+
+        .glitter-button:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.8);
+        }
+
+        /* Floating Hearts Animation */
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+        }
+
+        .floating-heart {
+            position: absolute;
+            animation: floatUp 1s ease-out forwards;
+            pointer-events: none;
+            color: #ff007f;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-dragDark text-white font-montserrat overflow-x-hidden selection:bg-dragPink selection:text-white">
+
+    <!-- Starfield/Glitter Particle Background Canvas -->
+    <canvas id="sparkleCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- NAVIGATION HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 glass-card border-b border-dragPink/30" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-12 h-12 rounded-full pink-purple-gradient p-0.5 flex items-center justify-center shadow-[0_0_15px_#ff007f]">
+                    <div class="w-full h-full bg-dragDark rounded-full flex items-center justify-center">
+                        <i class="fa-solid font-bold fa-crown text-dragGold text-xl group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-cinzel text-xl sm:text-2xl font-black tracking-widest gold-gradient-text leading-none">LA MÁS DRAGA</span>
+                    <span class="text-[9px] tracking-[0.3em] text-dragPink font-bold uppercase">Secta Feminosa</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wider">
+                <a href="#hero" class="hover:text-dragPink transition-colors flex items-center gap-1"><i class="fa-solid fa-sparkles text-xs text-dragGold"></i> Inicio</a>
+                <a href="#feminosas" class="hover:text-dragPink transition-colors">Feminosas</a>
+                <a href="#episodios" class="hover:text-dragPink transition-colors">Episodios</a>
+                <a href="#tour" class="hover:text-dragPink transition-colors">Tour & Merch</a>
+                <a href="#secta" class="hover:text-dragPink transition-colors">La Secta</a>
+            </nav>
+
+            <!-- Action Button -->
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#feminosas" class="glitter-button text-black font-extrabold px-5 py-2.5 rounded-full text-xs uppercase tracking-wider shadow-lg">
+                    <i class="fa-solid fa-heart mr-1.5"></i> Votar Ahora
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobileMenuBtn" class="md:hidden text-2xl text-dragPink focus:outline-none p-2" aria-label="Abrir Menú">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass-card border-t border-dragPink/20 px-6 py-6 flex flex-col space-y-4">
+            <a href="#hero" class="mobile-link text-lg font-bold hover:text-dragPink">Inicio</a>
+            <a href="#feminosas" class="mobile-link text-lg font-bold hover:text-dragPink">Feminosas</a>
+            <a href="#episodios" class="mobile-link text-lg font-bold hover:text-dragPink">Episodios</a>
+            <a href="#tour" class="mobile-link text-lg font-bold hover:text-dragPink">Tour & Merch</a>
+            <a href="#secta" class="mobile-link text-lg font-bold hover:text-dragPink">La Secta</a>
+            <a href="#feminosas" class="mobile-link glitter-button text-center text-black font-bold py-3 rounded-full uppercase">
+                <i class="fa-solid fa-heart mr-1"></i> Votar por tu Favorita
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="relative z-10 pt-20">
+
+        <!-- 1. HERO SECTION -->
+        <section id="hero" class="relative min-h-[90vh] flex items-center justify-center px-4 py-20 overflow-hidden">
+            <!-- Background Glow Orbs -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-dragPink/20 rounded-full blur-[140px] pointer-events-none"></div>
+            <div class="absolute bottom-10 right-10 w-[350px] h-[350px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
+            
+            <div class="max-w-5xl mx-auto text-center relative z-10">
+                <!-- Tagline Badge -->
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-card border border-dragGold/40 mb-6 animate-pulse">
+                    <i class="fa-solid fa-crown text-dragGold text-sm"></i>
+                    <span class="text-xs uppercase tracking-widest font-extrabold gold-gradient-text">El Reality Drag Más Grande de México</span>
+                </div>
+
+                <!-- Main Glowing Title -->
+                <h1 class="font-cinzel text-5xl sm:text-7xl lg:text-8xl font-black uppercase tracking-tight mb-4 leading-none">
+                    <span class="block neon-text-pink">LA MÁS</span>
+                    <span class="block gold-gradient-text text-6xl sm:text-8xl lg:text-9xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">DRAGA</span>
+                </h1>
+
+                <!-- Dynamic Iconic Quote -->
+                <p class="font-marker text-2xl sm:text-3xl text-dragPink my-6 rotate-[-2deg] tracking-wide drop-shadow-[0_0_10px_#ff007f]">
+                    "¡Y LA QUE SOPORTE, MI CIELA!" 👑
+                </p>
+
+                <p class="max-w-2xl mx-auto text-gray-300 text-base sm:text-lg mb-10 leading-relaxed font-light">
+                    Bienvenidx a la catedral del talento, el glam, la cultura mexicana y el arte drag. Descubre a las Feminosas, vota por tu reina suprema y sé parte de la Secta Feminosa.
+                </p>
+
+                <!-- Hero CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-5">
+                    <a href="#feminosas" class="w-full sm:w-auto glitter-button text-black font-extrabold text-sm uppercase tracking-widest px-8 py-4 rounded-full shadow-[0_0_30px_rgba(255,0,127,0.5)] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-fire text-lg"></i> Conoce a las Feminosas
+                    </a>
+                    <button onclick="playDragAudioSynth()" class="w-full sm:w-auto glass-card hover:bg-dragPink/20 text-white font-bold text-sm uppercase tracking-widest px-8 py-4 rounded-full border border-dragPink/50 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-volume-high text-dragGold"></i> ¡Sello Feminoso!
+                    </button>
+                </div>
+
+                <!-- Live Stats Bar -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto">
+                    <div class="glass-card p-4 rounded-2xl border border-dragPink/30 text-center">
+                        <span class="block font-cinzel text-3xl font-black gold-gradient-text" id="totalVotesCounter">1,482,910</span>
+                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Votos Registrados</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl border border-dragPink/30 text-center">
+                        <span class="block font-cinzel text-3xl font-black text-dragPink">6+</span>
+                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Temporadas Épicas</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl border border-dragPink/30 text-center">
+                        <span class="block font-cinzel text-3xl font-black gold-gradient-text">70+</span>
+                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Feminosas</span>
+                    </div>
+                    <div class="glass-card p-4 rounded-2xl border border-dragPink/30 text-center">
+                        <span class="block font-cinzel text-3xl font-black text-dragPink">100%</span>
+                        <span class="text-xs text-gray-400 uppercase font-bold tracking-wider">Orgullo Mexicano</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. FEMINOSAS GALLERY (FILTERABLE & INTERACTIVE VOTING) -->
+        <section id="feminosas" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+            <div class="text-center mb-12">
+                <h2 class="text-xs uppercase tracking-[0.4em] text-dragPink font-extrabold mb-2">Galería Real</h2>
+                <h3 class="font-cinzel text-3xl sm:text-5xl font-black gold-gradient-text">NUESTRAS FEMINOSAS</h3>
+                <p class="text-gray-400 text-sm sm:text-base mt-2 max-w-xl mx-auto">Filtra por temporada, conoce su historia y dales tu voto para colocarlas en el salón de la fama drag.</p>
+            </div>
+
+            <!-- Season Filter Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 mb-12" id="filterContainer">
+                <button data-filter="all" class="filter-btn active px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-dragGold border border-dragGold shadow-[0_0_10px_rgba(255,215,0,0.3)] transition-all">
+                    Todas
+                </button>
+                <button data-filter="allstars" class="filter-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-gray-300 hover:text-dragPink hover:border-dragPink border border-white/10 transition-all">
+                    Solo Las Más
+                </button>
+                <button data-filter="t6" class="filter-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-gray-300 hover:text-dragPink hover:border-dragPink border border-white/10 transition-all">
+                    Temporada 6
+                </button>
+                <button data-filter="t5" class="filter-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-gray-300 hover:text-dragPink hover:border-dragPink border border-white/10 transition-all">
+                    Temporada 5
+                </button>
+                <button data-filter="t4" class="filter-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-gray-300 hover:text-dragPink hover:border-dragPink border border-white/10 transition-all">
+                    Temporada 4
+                </button>
+                <button data-filter="jueces" class="filter-btn px-5 py-2 rounded-full text-xs font-bold uppercase tracking-wider glass-card text-gray-300 hover:text-dragPink hover:border-dragPink border border-white/10 transition-all">
+                    Jueces e Íconos
+                </button>
+            </div>
+
+            <!-- Drag Queens Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="queensGrid">
+                <!-- Cards will be populated dynamically by JS -->
+            </div>
+        </section>
+
+        <!-- 3. ICONIC MOMENTS / EPISODES -->
+        <section id="episodios" class="py-20 bg-dragDark/80 relative border-y border-dragPink/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                    <div>
+                        <span class="text-xs uppercase tracking-[0.3em] text-dragGold font-extrabold">Pasarela e Historia</span>
+                        <h3 class="font-cinzel text-3xl sm:text-5xl font-black text-white mt-1">MOMENTOS <span class="text-dragPink">ICÓNICOS</span></h3>
+                    </div>
+                    <p class="text-gray-400 text-sm max-w-md mt-4 md:mt-0">Revive las pasarelas más impactantes, retos de doblaje sangrientos y momentos que paralizaron al internet.</p>
+                </div>
+
+                <!-- Moments Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Moment Card 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group border border-dragPink/20 hover:border-dragPink transition-all duration-300">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop" alt="La Más Talavera" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dragDark via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-dragPink text-black font-black text-[10px] uppercase px-3 py-1 rounded-full">Reto de Pasarela</span>
+                            <button onclick="openVideoModal('La Más Talavera', 'https://www.youtube.com/embed/dQw4w9WgXcQ')" class="absolute inset-0 m-auto w-14 h-14 rounded-full bg-dragPink/80 text-white flex items-center justify-center text-xl shadow-[0_0_20px_#ff007f] group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-cinzel text-xl font-bold text-white mb-2 group-hover:text-dragPink transition-colors">La Más Talavera</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-4">Alta costura inspirada en la artesanía de Puebla. Looks con cerámica viva, azulejos y elegancia barroca.</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/10">
+                                <span><i class="fa-regular fa-eye text-dragGold mr-1"></i> 2.4M Vistas</span>
+                                <span class="text-dragGold font-semibold"><i class="fa-solid fa-star mr-1"></i> Épico</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Moment Card 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group border border-dragPink/20 hover:border-dragPink transition-all duration-300">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=800&auto=format&fit=crop" alt="La Más Precolombina" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dragDark via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-dragGold text-black font-black text-[10px] uppercase px-3 py-1 rounded-full">Gran Final</span>
+                            <button onclick="openVideoModal('La Más Precolombina', 'https://www.youtube.com/embed/dQw4w9WgXcQ')" class="absolute inset-0 m-auto w-14 h-14 rounded-full bg-dragGold/80 text-black flex items-center justify-center text-xl shadow-[0_0_20px_#ffd700] group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-cinzel text-xl font-bold text-white mb-2 group-hover:text-dragGold transition-colors">La Más Precolombina</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-4">Tributo a los mitos aztecas y mayas. Plumas gigantes, tocados con deidades doradas y misticismo ancestral.</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/10">
+                                <span><i class="fa-regular fa-eye text-dragGold mr-1"></i> 3.8M Vistas</span>
+                                <span class="text-dragGold font-semibold"><i class="fa-solid fa-crown mr-1"></i> Histórico</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Moment Card 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group border border-dragPink/20 hover:border-dragPink transition-all duration-300">
+                        <div class="relative h-60 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop" alt="La Más Artesanal" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dragDark via-transparent to-transparent"></div>
+                            <span class="absolute top-4 left-4 bg-purple-600 text-white font-black text-[10px] uppercase px-3 py-1 rounded-full">Reto Cultural</span>
+                            <button onclick="openVideoModal('La Más Artesanal', 'https://www.youtube.com/embed/dQw4w9WgXcQ')" class="absolute inset-0 m-auto w-14 h-14 rounded-full bg-dragPink/80 text-white flex items-center justify-center text-xl shadow-[0_0_20px_#ff007f] group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="font-cinzel text-xl font-bold text-white mb-2 group-hover:text-dragPink transition-colors">La Más Artesanal</h4>
+                            <p class="text-gray-400 text-xs leading-relaxed mb-4">Homenaje a los alebrijes, huichol y bordados tradicionales en pasarelas vivientes de colores fosforescentes.</p>
+                            <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-white/10">
+                                <span><i class="fa-regular fa-eye text-dragGold mr-1"></i> 4.5M Vistas</span>
+                                <span class="text-dragGold font-semibold"><i class="fa-solid fa-fire mr-1"></i> En Tendencia</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. TOUR & OFFICIAL MERCH SECTION -->
+        <section id="tour" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Tabs Header -->
+            <div class="text-center mb-12">
+                <span class="text-xs uppercase tracking-[0.3em] text-dragPink font-extrabold">En Vivo & Estilo</span>
+                <h3 class="font-cinzel text-3xl sm:text-5xl font-black gold-gradient-text">TOUR & MERCANCÍA</h3>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Tour Dates (7 cols) -->
+                <div class="lg:col-span-7 space-y-4">
+                    <h4 class="font-cinzel text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-ticket text-dragPink"></i> Próximos Shows
+                    </h4>
+
+                    <!-- Date Item 1 -->
+                    <div class="glass-card p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-dragPink/20 hover:border-dragPink transition-all">
+                        <div class="flex items-center gap-4 text-center sm:text-left">
+                            <div class="w-16 h-16 rounded-xl pink-purple-gradient flex flex-col items-center justify-center font-black text-white shrink-0">
+                                <span class="text-xs uppercase tracking-wider">NOV</span>
+                                <span class="text-2xl font-cinzel leading-none">18</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-lg text-white">CDMX - Arena CDMX</h5>
+                                <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot text-dragGold mr-1"></i> Gran Final en Vivo - Solo Las Más</p>
+                            </div>
+                        </div>
+                        <button onclick="buyTicketModal('CDMX', 'Arena CDMX')" class="w-full sm:w-auto glitter-button text-black font-black text-xs uppercase px-6 py-3 rounded-xl whitespace-nowrap">
+                            Boletos
+                        </button>
+                    </div>
+
+                    <!-- Date Item 2 -->
+                    <div class="glass-card p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-dragPink/20 hover:border-dragPink transition-all">
+                        <div class="flex items-center gap-4 text-center sm:text-left">
+                            <div class="w-16 h-16 rounded-xl bg-purple-900/60 border border-purple-500/30 flex flex-col items-center justify-center font-black text-white shrink-0">
+                                <span class="text-xs uppercase tracking-wider">DIC</span>
+                                <span class="text-2xl font-cinzel leading-none">02</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-lg text-white">Guadalajara - Auditorio Telmex</h5>
+                                <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot text-dragGold mr-1"></i> Tour Feminoso Gala Navideña</p>
+                            </div>
+                        </div>
+                        <button onclick="buyTicketModal('Guadalajara', 'Auditorio Telmex')" class="w-full sm:w-auto glitter-button text-black font-black text-xs uppercase px-6 py-3 rounded-xl whitespace-nowrap">
+                            Boletos
+                        </button>
+                    </div>
+
+                    <!-- Date Item 3 -->
+                    <div class="glass-card p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-dragPink/20 hover:border-dragPink transition-all">
+                        <div class="flex items-center gap-4 text-center sm:text-left">
+                            <div class="w-16 h-16 rounded-xl bg-purple-900/60 border border-purple-500/30 flex flex-col items-center justify-center font-black text-white shrink-0">
+                                <span class="text-xs uppercase tracking-wider">ENE</span>
+                                <span class="text-2xl font-cinzel leading-none">15</span>
+                            </div>
+                            <div>
+                                <h5 class="font-bold text-lg text-white">Monterrey - Pabellón M</h5>
+                                <p class="text-xs text-gray-400"><i class="fa-solid fa-location-dot text-dragGold mr-1"></i> Noche de Reinas y Lip Sync</p>
+                            </div>
+                        </div>
+                        <button onclick="buyTicketModal('Monterrey', 'Pabellón M')" class="w-full sm:w-auto glitter-button text-black font-black text-xs uppercase px-6 py-3 rounded-xl whitespace-nowrap">
+                            Boletos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Merch Showcase (5 cols) -->
+                <div class="lg:col-span-5">
+                    <h4 class="font-cinzel text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-dragGold"></i> Tienda Oficial
+                    </h4>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Item 1 -->
+                        <div class="glass-card p-4 rounded-2xl border border-dragGold/30 text-center group hover:border-dragGold transition-all">
+                            <div class="h-36 rounded-xl bg-dragDark/60 flex items-center justify-center overflow-hidden mb-3 relative">
+                                <i class="fa-solid fa-shirt text-5xl text-dragPink group-hover:scale-110 transition-transform"></i>
+                                <span class="absolute top-2 right-2 bg-dragGold text-black text-[9px] font-black uppercase px-2 py-0.5 rounded">Bestseller</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white truncate">Playera "Y La Que Soporte"</h5>
+                            <p class="text-dragGold font-black text-sm my-1">$450 MXN</p>
+                            <button onclick="addToCart('Playera Y La Que Soporte')" class="w-full bg-dragPink/20 hover:bg-dragPink text-white font-bold text-xs py-2 rounded-lg border border-dragPink/50 transition-all">
+                                Agregar <i class="fa-solid fa-cart-plus ml-1"></i>
+                            </button>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="glass-card p-4 rounded-2xl border border-dragGold/30 text-center group hover:border-dragGold transition-all">
+                            <div class="h-36 rounded-xl bg-dragDark/60 flex items-center justify-center overflow-hidden mb-3 relative">
+                                <i class="fa-solid fa-fan text-5xl text-dragGold group-hover:scale-110 transition-transform"></i>
+                                <span class="absolute top-2 right-2 bg-dragPink text-white text-[9px] font-black uppercase px-2 py-0.5 rounded">Oficial</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white truncate">Abanico Imperial Neón</h5>
+                            <p class="text-dragGold font-black text-sm my-1">$350 MXN</p>
+                            <button onclick="addToCart('Abanico Imperial Neón')" class="w-full bg-dragPink/20 hover:bg-dragPink text-white font-bold text-xs py-2 rounded-lg border border-dragPink/50 transition-all">
+                                Agregar <i class="fa-solid fa-cart-plus ml-1"></i>
+                            </button>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="glass-card p-4 rounded-2xl border border-dragGold/30 text-center group hover:border-dragGold transition-all col-span-2">
+                            <div class="h-28 rounded-xl bg-dragDark/60 flex items-center justify-center overflow-hidden mb-3 relative">
+                                <i class="fa-solid fa-gem text-5xl text-purple-400 group-hover:scale-110 transition-transform"></i>
+                                <span class="absolute top-2 right-2 bg-purple-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded">Nuevo</span>
+                            </div>
+                            <h5 class="text-sm font-bold text-white truncate">Set de Pines Neón & Corona Glitter</h5>
+                            <p class="text-dragGold font-black text-sm my-1">$280 MXN</p>
+                            <button onclick="addToCart('Set de Pines Neón Glitter')" class="w-full bg-dragPink/20 hover:bg-dragPink text-white font-bold text-xs py-2 rounded-lg border border-dragPink/50 transition-all">
+                                Agregar <i class="fa-solid fa-cart-plus ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SECTA FEMINOSA (STYLIZED SUBSCRIPTION FORM) -->
+        <section id="secta" class="py-20 relative overflow-hidden">
+            <!-- Background Glows -->
+            <div class="absolute inset-0 bg-gradient-to-r from-dragPurple/80 via-dragDark to-dragPurple/80"></div>
+            
+            <div class="max-w-4xl mx-auto px-4 relative z-10">
+                <div class="glass-card-gold p-8 sm:p-12 rounded-3xl neon-border-gold text-center relative">
+                    <div class="w-20 h-20 rounded-full gold-gradient-bg mx-auto flex items-center justify-center shadow-[0_0_30px_#ffd700] mb-6">
+                        <i class="fa-solid fa-hands-praying text-black text-3xl"></i>
+                    </div>
+
+                    <h3 class="font-cinzel text-3xl sm:text-5xl font-black gold-gradient-text mb-2">ÚNETE A LA SECTA FEMINOSA</h3>
+                    <p class="text-gray-300 text-sm sm:text-base max-w-xl mx-auto mb-8">
+                        Recibe antes que nadie las exclusivas de la nueva temporada, códigos de descuento para el tour, contenido sin censura y pases VIP.
+                    </p>
+
+                    <form id="sectaForm" class="max-w-lg mx-auto space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="text" placeholder="Tu Nombre Drag / Alias" required class="w-full px-5 py-3.5 rounded-xl bg-black/60 border border-dragGold/40 text-white placeholder-gray-500 focus:outline-none focus:border-dragGold focus:ring-1 focus:ring-dragGold text-sm">
+                            <input type="email" placeholder="Tu Correo Electrónico" required class="w-full px-5 py-3.5 rounded-xl bg-black/60 border border-dragGold/40 text-white placeholder-gray-500 focus:outline-none focus:border-dragGold focus:ring-1 focus:ring-dragGold text-sm">
+                        </div>
+
+                        <!-- Level Select -->
+                        <select class="w-full px-5 py-3.5 rounded-xl bg-black/60 border border-dragGold/40 text-gray-300 focus:outline-none focus:border-dragGold text-sm">
+                            <option value="infanta">Rango: Infanta Feminosa (Gratis)</option>
+                            <option value="suprema">Rango: Suprema del Glam ($99/mes)</option>
+                            <option value="gobernadora">Rango: Gobernadora Drag ($199/mes)</option>
+                        </select>
+
+                        <button type="submit" class="w-full glitter-button text-black font-black text-sm uppercase py-4 rounded-xl shadow-[0_0_20px_rgba(255,215,0,0.5)] tracking-widest flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-crown"></i> Jura Lealtad a la Secta
+                        </button>
+                    </form>
+
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-6">Prometemos no mandar spam, sólo puro glam y chisme fresco. ✨</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-dragPink/20 py-12 relative z-10 text-gray-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-crown text-dragPink text-2xl"></i>
+                <span class="font-cinzel font-bold text-lg text-white">LA MÁS DRAGA</span>
+            </div>
+
+            <!-- Social Links -->
+            <div class="flex items-center space-x-6 text-xl">
+                <a href="#" class="hover:text-dragPink transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="hover:text-dragPink transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-dragPink transition-colors"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#" class="hover:text-dragPink transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
+            </div>
+
+            <p class="text-xs text-gray-500 text-center md:text-right">
+                &copy; 2026 La Más Draga Oficial. Fan Concept & Experience. <br>
+                Hecho con <i class="fa-solid fa-heart text-dragPink"></i> y mucho Glitter para toda la comunidad LGBTQ+.
+            </p>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: QUEEN BIOGRAPHY MODAL -->
+    <div id="queenModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-card border border-dragPink/50 w-full max-w-2xl rounded-3xl overflow-hidden relative shadow-[0_0_50px_rgba(255,0,127,0.4)]">
+            <button onclick="closeQueenModal()" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/60 text-white hover:text-dragPink flex items-center justify-center text-lg border border-white/20">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2">
+                <div class="h-64 sm:h-auto relative">
+                    <img id="modalQueenImg" src="" alt="" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-dragDark via-transparent to-transparent sm:hidden"></div>
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col justify-between">
+                    <div>
+                        <span id="modalQueenSeason" class="text-[10px] font-black uppercase px-3 py-1 rounded-full bg-dragPink text-black"></span>
+                        <h3 id="modalQueenName" class="font-cinzel text-3xl font-black text-white mt-2"></h3>
+                        <p id="modalQueenQuote" class="font-marker text-dragGold text-sm my-2"></p>
+                        <p id="modalQueenBio" class="text-gray-300 text-xs leading-relaxed mt-4"></p>
+                        <div id="modalQueenHandle" class="mt-3 text-xs text-dragPink font-semibold flex items-center gap-1">
+                            <i class="fa-brands fa-instagram text-dragGold"></i> <span id="modalHandleText"></span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                        <div>
+                            <span class="block text-[10px] text-gray-400 uppercase">Votos Totales</span>
+                            <span id="modalQueenVotes" class="font-cinzel text-xl font-bold text-dragPink"></span>
+                        </div>
+                        <button id="modalVoteBtn" class="glitter-button text-black font-extrabold text-xs px-5 py-2.5 rounded-full uppercase">
+                            <i class="fa-solid fa-heart mr-1"></i> Votar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: VIDEO / EPISODE PREVIEW MODAL -->
+    <div id="videoModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card border border-dragGold/40 w-full max-w-3xl rounded-3xl overflow-hidden relative p-4">
+            <div class="flex items-center justify-between pb-3 px-2">
+                <h4 id="videoModalTitle" class="font-cinzel font-bold text-lg text-dragGold"></h4>
+                <button onclick="closeVideoModal()" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="aspect-video w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center relative">
+                <div class="text-center p-8">
+                    <i class="fa-solid fa-clapperboard text-6xl text-dragPink mb-4 animate-bounce"></i>
+                    <p class="text-lg font-bold text-white">¡Momento Icónico de La Más Draga!</p>
+                    <p class="text-xs text-gray-400 mt-2">Preparando la pasarela y los lip syncs más espectaculares...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA: FEMINOSAS DRAG QUEENS & ICONS ---
+        const queensData = [
+            {
+                id: 'moon',
+                name: 'Moon',
+                seasonTag: 'Temporada 6',
+                seasonCategory: 't6',
+                quote: ' "¡La Luna brilla con luz propia en la pasarela!" ',
+                bio: 'Feminosa icónica de la Temporada 6. Reconocida por su estética mística, elegancia etérea, conceptos vanguardistas y transformaciones visuales impactantes.',
+                votes: 189300,
+                image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop',
+                instagram: '@moon_lmd'
+            },
+            {
+                id: 'tulsa',
+                name: 'Tulsa',
+                seasonTag: 'Temporada 6',
+                seasonCategory: 't6',
+                quote: ' "¡Glamour estridente, vanguardia y carisma puro!" ',
+                bio: 'Directamente de la Temporada 6. Su propuesta futurista, siluetas de alta moda y personalidad magnética la convirtieron en una consentida de los fans.',
+                votes: 174500,
+                image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop',
+                instagram: '@tulsa_drag'
+            },
+            {
+                id: 'nayla',
+                name: 'Nayla',
+                seasonTag: 'Temporada 6',
+                seasonCategory: 't6',
+                quote: ' "¡Diva sensual, elegancia y fuerza escénica!" ',
+                bio: 'Feminosa destacada de la Temporada 6. Con una estampa imponente, maquillajes hiper pulidos y doblajes cargados de dramatismo y sensualidad.',
+                votes: 168200,
+                image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=800&auto=format&fit=crop',
+                instagram: '@nayla_queen'
+            },
+            {
+                id: 'hiddent',
+                name: 'Hidden T',
+                seasonTag: 'Ganadora Temporada 4',
+                seasonCategory: 't4',
+                quote: ' "¡El misterio hecho alta costura drag!" ',
+                bio: 'Corona dorada de la Temporada 4 (Hidden Kelly). Maestra del diseño de vestuario, ilusión óptica y revelaciones de pasarela que hicieron historia en el programa.',
+                votes: 215400,
+                image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=800&auto=format&fit=crop',
+                instagram: '@hiddent_oficial'
+            },
+            {
+                id: 'yari',
+                name: 'YK / Yari Mejía',
+                seasonTag: 'La Jueza / Ícono Drag',
+                seasonCategory: 'jueces',
+                quote: ' "¡Veredicto: PERRA, FABULOSA Y MÁGICA!" ',
+                bio: 'Legendaria diseñadora, estilista y jueza estrella de La Más Draga. Gurú de la moda, defensora de la cultura drag mexicana y jueza que inmortalizó los momentos más icónicos del panel.',
+                votes: 260000,
+                image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=800&auto=format&fit=crop',
+                instagram: '@yarimejia'
+            },
+            {
+                id: 'cpher',
+                name: 'C-Pher',
+                seasonTag: 'Solo Las Más',
+                seasonCategory: 'allstars',
+                quote: ' "¡La que viste y calza alto diseño!" ',
+                bio: 'Originaria de Chile pero adoptada por México. Maestra del maquillaje editorial, pelucas esculpidas y una presencia escénica insuperable.',
+                votes: 184200,
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+                instagram: '@cpherdrag'
+            },
+            {
+                id: 'alexis3xl',
+                name: 'Alexis 3XL',
+                seasonTag: 'Ganadora Temporada 2',
+                seasonCategory: 'allstars',
+                quote: ' "¡La reina plus size que conquistó corazones!" ',
+                bio: 'Ícono del drag mexicano y ganadora de la Temporada 2. Carisma gigantesco, empoderamiento corporal y maquillajes inolvidables.',
+                votes: 198900,
+                image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=800&auto=format&fit=crop',
+                instagram: '@alexis3xl'
+            },
+            {
+                id: 'fifiestah',
+                name: 'Fifi Estah',
+                seasonTag: 'Temporada 5 Winner',
+                seasonCategory: 't5',
+                quote: ' "¡Acrobática, sensual y sin límites!" ',
+                bio: 'Ganadora indiscutible de la Temporada 5. Destaca por sus números de flexibilidad extrema, acrobacias aéreas y outfits deslumbrantes.',
+                votes: 195400,
+                image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=800&auto=format&fit=crop',
+                instagram: '@fifiestah'
+            },
+            {
+                id: 'sirena',
+                name: 'Sirena',
+                seasonTag: 'Temporada 6',
+                seasonCategory: 't6',
+                quote: ' "¡Voz en vivo, glamour e ilusión!" ',
+                bio: 'Destacada por su potente rango vocal, elegancia clásica y vestidos de noche con miles de incrustaciones de pedrería.',
+                votes: 143800,
+                image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop',
+                instagram: '@sirena_drag'
+            }
+        ];
+
+        // --- RENDER QUEEN CARDS ---
+        function renderQueens(filter = 'all') {
+            const grid = document.getElementById('queensGrid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? queensData 
+                : queensData.filter(q => q.seasonCategory === filter);
+
+            filtered.forEach(queen => {
+                const card = document.createElement('div');
+                card.className = "glass-card rounded-3xl overflow-hidden group border border-dragPink/20 hover:border-dragPink transition-all duration-300 flex flex-col justify-between relative";
+                
+                card.innerHTML = `
+                    <div class="relative h-80 overflow-hidden">
+                        <img src="${queen.image}" alt="${queen.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dragDark via-transparent to-transparent"></div>
+                        
+                        <!-- Badge Season -->
+                        <span class="absolute top-4 left-4 bg-black/70 backdrop-blur-md text-dragGold border border-dragGold/40 text-[10px] font-black uppercase px-3 py-1 rounded-full">
+                            ${queen.seasonTag}
+                        </span>
+
+                        <!-- Interactive Heart Vote Floating Button -->
+                        <button onclick="voteQueen(event, '${queen.id}')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-dragDark/80 border border-dragPink text-dragPink hover:bg-dragPink hover:text-white transition-all flex items-center justify-center shadow-[0_0_15px_#ff007f]">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-cinzel text-2xl font-black text-white group-hover:text-dragPink transition-colors">${queen.name}</h4>
+                            <p class="font-marker text-dragGold text-xs my-2">${queen.quote}</p>
+                            <p class="text-gray-400 text-xs line-clamp-2 leading-relaxed">${queen.bio}</p>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-gray-400 block uppercase">Votos</span>
+                                <span class="font-cinzel font-black text-lg text-dragPink" id="votes-${queen.id}">${queen.votes.toLocaleString()}</span>
+                            </div>
+                            <button onclick="openQueenModal('${queen.id}')" class="text-xs font-bold text-white bg-white/10 hover:bg-dragPink/30 border border-white/20 hover:border-dragPink px-4 py-2 rounded-full transition-all">
+                                Ver Bio <i class="fa-solid fa-arrow-right ml-1 text-dragGold"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- VOTING SYSTEM ---
+        let currentQueenInModal = null;
+
+        function voteQueen(e, queenId) {
+            e.stopPropagation();
+            const queen = queensData.find(q => q.id === queenId);
+            if (queen) {
+                queen.votes++;
+                const voteSpan = document.getElementById(`votes-${queen.id}`);
+                if (voteSpan) voteSpan.textContent = queen.votes.toLocaleString();
+
+                if (currentQueenInModal && currentQueenInModal.id === queen.id) {
+                    const modalVotes = document.getElementById('modalQueenVotes');
+                    if (modalVotes) modalVotes.textContent = queen.votes.toLocaleString();
+                }
+
+                // Increment total votes in header stat
+                const totalCounter = document.getElementById('totalVotesCounter');
+                if (totalCounter) {
+                    let total = parseInt(totalCounter.textContent.replace(/,/g, ''));
+                    totalCounter.textContent = (total + 1).toLocaleString();
+                }
+
+                // Heart particle animation at cursor/click position
+                createFloatingHeart(e.clientX || window.innerWidth/2, e.clientY || window.innerHeight/2);
+
+                showToast(`¡Le diste un voto a ${queen.name}! 👑✨`);
+                playDragAudioSynth();
+            }
+        }
+
+        function createFloatingHeart(x, y) {
+            const heart = document.createElement('i');
+            heart.className = 'fa-solid fa-heart floating-heart';
+            heart.style.left = `${x - 12}px`;
+            heart.style.top = `${y - 12}px`;
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        // --- MODAL LOGIC ---
+        function openQueenModal(queenId) {
+            const queen = queensData.find(q => q.id === queenId);
+            if (!queen) return;
+
+            currentQueenInModal = queen;
+            document.getElementById('modalQueenImg').src = queen.image;
+            document.getElementById('modalQueenName').textContent = queen.name;
+            document.getElementById('modalQueenSeason').textContent = queen.seasonTag;
+            document.getElementById('modalQueenQuote').textContent = queen.quote;
+            document.getElementById('modalQueenBio').textContent = queen.bio;
+            document.getElementById('modalQueenVotes').textContent = queen.votes.toLocaleString();
+            
+            const handleText = document.getElementById('modalHandleText');
+            if (handleText) handleText.textContent = queen.instagram || '@lamasdraga';
+
+            const voteBtn = document.getElementById('modalVoteBtn');
+            voteBtn.onclick = (e) => voteQueen(e, queen.id);
+
+            const modal = document.getElementById('queenModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeQueenModal() {
+            const modal = document.getElementById('queenModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function openVideoModal(title, url) {
+            document.getElementById('videoModalTitle').textContent = title;
+            document.getElementById('videoModal').classList.remove('hidden');
+        }
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.add('hidden');
+        }
+
+        function buyTicketModal(city, venue) {
+            showToast(`🎫 Redirigiendo a taquilla para ${city} (${venue})...`);
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.8 }
+            });
+        }
+
+        function addToCart(itemName) {
+            showToast(`🛍️ ¡${itemName} agregado a tu carrito de compras!`);
+            playDragAudioSynth();
+        }
+
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'glass-card-gold text-white text-xs font-bold px-5 py-3 rounded-2xl border border-dragGold shadow-[0_0_15px_rgba(255,215,0,0.4)] flex items-center gap-2 animate-bounce pointer-events-auto';
+            toast.innerHTML = `<i class="fa-solid fa-sparkles text-dragGold"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // --- WEB AUDIO SYNTHESIZER (SELLO DRAG SOUND) ---
+        function playDragAudioSynth() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.3);
+
+                gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                // Browser restriction fallback
+            }
+        }
+
+        // --- FILTER BUTTON EVENTS ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'text-dragGold', 'border-dragGold', 'shadow-[0_0_10px_rgba(255,215,0,0.3)]');
+                    b.classList.add('text-gray-300', 'border-white/10');
+                });
+
+                btn.classList.add('active', 'text-dragGold', 'border-dragGold', 'shadow-[0_0_10px_rgba(255,215,0,0.3)]');
+                btn.classList.remove('text-gray-300', 'border-white/10');
+
+                const filter = btn.getAttribute('data-filter');
+                renderQueens(filter);
+            });
+        });
+
+        // --- SECTA FORM SUBMISSION ---
+        document.getElementById('sectaForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            confetti({
+                particleCount: 120,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#ff007f', '#ffd700', '#8a2be2']
+            });
+            showToast('👑 ¡Bienvenidx oficialmente a la Secta Feminosa!');
+            e.target.reset();
+        });
+
+        // --- MOBILE MENU ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // --- BACKGROUND SPARKLE CANVAS EFFECT ---
+        const canvas = document.getElementById('sparkleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.alpha = Math.random();
+                this.speedAlpha = (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1);
+                this.color = Math.random() > 0.5 ? '#ff007f' : '#ffd700';
+            }
+
+            update() {
+                this.alpha += this.speedAlpha;
+                if (this.alpha <= 0 || this.alpha >= 1) {
+                    this.speedAlpha = -this.speedAlpha;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateSparkles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateSparkles);
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            renderQueens('all');
+            animateSparkles();
+        };
+    </script>
 </body>
 </html>
